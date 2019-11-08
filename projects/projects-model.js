@@ -2,19 +2,28 @@ const db = require("../data/db");
 function getProjects() {
   return db("projects");
 }
+
+function getProjectbyId(id) {
+  return db("projects").where({ id });
+}
+
 function getResources() {
   return db("resources");
 }
-function getTasks() {
-  return db("tasks")
-    .innerJoin("projects", "projects.id", "tasks.project_id")
+function getTasks(id) {
+  return db("projects")
+    .join("tasks", "tasks.project_id", "projects.id")
     .select(
-      "tasks.task_notes",
-      "tasks.task_completed",
       "projects.project_name",
-      "projects.project_description"
-    );
+      "projects.project_description",
+      "tasks.task_description",
+      "tasks.task_notes",
+      "tasks.completed",
+      "tasks.project_id"
+    )
+    .where({ project_id: id });
 }
+
 function addProjects(project) {
   return db("projects").insert(project);
 }
@@ -22,11 +31,13 @@ function addResources(resource) {
   return db("resources").insert(resource);
 }
 
-function addTasks(task) {
-  return db("tasks").insert(task);
+function addTasks(id, task) {
+  return db("tasks").insert({ ...task, project_id: id });
 }
+
 module.exports = {
   getProjects,
+  getProjectbyId,
   getResources,
   getTasks,
   addProjects,

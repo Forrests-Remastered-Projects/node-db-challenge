@@ -1,10 +1,8 @@
 const express = require("express");
 const server = express();
-const dotenv = require("dotenv").config();
 server.use(express.json());
 const projectsRouter = require("./projects/projects-router");
-server.use("/projects", projectsRouter);
-server.use("/tasks", projectsRouter);
-server.use("/resources", projectsRouter);
+server.use("/", projectsRouter);
+
 const port = process.env.PORT || 3100;
 server.listen(port, console.log(`Server running on ${port}`));
