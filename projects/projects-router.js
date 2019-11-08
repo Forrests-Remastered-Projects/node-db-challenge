@@ -3,7 +3,7 @@ const Projects = require("./projects-model.js");
 const Tasks = require("./projects-model.js");
 const Resources = require("./projects-model.js");
 
-router.post("/", (req, res) => {
+router.post("/projects", (req, res) => {
   const project = req.body;
 
   Projects.addProjects(project)
@@ -16,7 +16,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
+router.get("/projects", (req, res) => {
   Projects.getProjects()
     .then(projects => {
       console.log("Getting Project", projects);
@@ -38,7 +38,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/tasks", (req, res) => {
   const task = req.body;
 
   Tasks.addTasks(task)
@@ -51,7 +51,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
+router.get("/tasks", (req, res) => {
   Tasks.getTasks()
     .then(tasks => {
       console.log("Getting Task", tasks);
@@ -71,7 +71,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/resources", (req, res) => {
   const resource = req.body;
 
   Resources.addResources(resource)
@@ -84,7 +84,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
+router.get("/resources", (req, res) => {
   Resources.getResources()
     .then(resources => {
       console.log("Getting Resource", resources);
