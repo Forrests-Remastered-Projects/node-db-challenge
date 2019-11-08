@@ -51,4 +51,49 @@ router.post("/", (req, res) => {
     });
 });
 
+router.get("/", (req, res) => {
+  Tasks.getTasks()
+    .then(tasks => {
+      console.log("Getting Task", tasks);
+
+      newTasks = tasks.map(task => {
+        if (task.task_completed === 0) {
+          return { ...task, task_completed: false };
+        } else {
+          return { ...task, task_completed: true };
+        }
+      });
+
+      res.status(201).json({ message: "Tasks got!", data: newTasks });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Server Error", error: err });
+    });
+});
+
+router.post("/", (req, res) => {
+  const resource = req.body;
+
+  Resources.addResources(resource)
+    .then(response => {
+      console.log("Posting Resource", response);
+      res.status(201).json({ message: "RESOURCE Created!" });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Server Error", error: err });
+    });
+});
+
+router.get("/", (req, res) => {
+  Resources.getResources()
+    .then(resources => {
+      console.log("Getting Resource", resources);
+
+      res.status(201).json({ message: "Resources got!", data: resources });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Server Error", error: err });
+    });
+});
+
 module.exports = router;
