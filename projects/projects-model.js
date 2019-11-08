@@ -9,10 +9,10 @@ function getTasks() {
   return db("tasks")
     .innerJoin("projects", "projects.id", "tasks.project_id")
     .select(
-      "tasks.notes",
-      "tasks.completed",
-      "projects.name",
-      "projects.description"
+      "tasks.task_notes",
+      "tasks.task_completed",
+      "projects.project_name",
+      "projects.project_description"
     );
 }
 function addProjects(project) {
