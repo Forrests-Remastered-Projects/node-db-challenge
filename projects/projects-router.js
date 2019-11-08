@@ -36,21 +36,34 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/tasks", (req, res) => {
-  const task = req.body;
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
 
-  db.addTasks(task)
-    .then(response => {
+  db.getProjectbyId(id)
+    .then(project => {
+      res.status(200).json(project);
+    })
+    .catch(err => {
+      res.status(500).json({ error: "could not find project by Id" });
+    });
+});
+
+router.post("/:id/tasks", (req, res) => {
+  const task = req.body;
+  const { id } = req.params;
+  db.addTasks(id, task)
+    .then(task => {
       console.log("Posting Task", response);
-      res.status(201).json({ message: "Task Created!" });
+      res.status(201).json(task);
     })
     .catch(err => {
       res.status(500).json({ message: "Server Error", error: err });
     });
 });
 
-router.get("/tasks", (req, res) => {
-  db.getTasks()
+router.get("/:id/tasks", (req, res) => {
+  const { id } = req.params;
+  db.getTasks(id)
     .then(tasks => {
       console.log("Getting Task", tasks);
 
@@ -62,7 +75,7 @@ router.get("/tasks", (req, res) => {
         }
       });
 
-      res.status(201).json({ message: "Tasks got!", data: newTasks });
+      res.status(200).json(tasks);
     })
     .catch(err => {
       res.status(500).json({ message: "Server Error", error: err });
@@ -70,12 +83,10 @@ router.get("/tasks", (req, res) => {
 });
 
 router.post("/resources", (req, res) => {
-  const resource = req.body;
-
-  db.addResources(resource)
-    .then(response => {
+  db.addResources(req.body)
+    .then(result => {
       console.log("Posting Resource", response);
-      res.status(201).json({ message: "RESOURCE Created!" });
+      res.status(201).json(result);
     })
     .catch(err => {
       res.status(500).json({ message: "Server Error", error: err });
@@ -87,11 +98,23 @@ router.get("/resources", (req, res) => {
     .then(resources => {
       console.log("Getting Resource", resources);
 
-      res.status(201).json({ message: "Resources got!", data: resources });
+      res.status(200).json(resources);
     })
     .catch(err => {
       res.status(500).json({ message: "Server Error", error: err });
     });
+});
+
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.getResourceById(id).then(resource => {
+    if (resource[0]) {
+      res.status(200).json(resource);
+    } else {
+      res.status(500).json({ error: "could not find resource by id" });
+    }
+  });
 });
 
 module.exports = router;
