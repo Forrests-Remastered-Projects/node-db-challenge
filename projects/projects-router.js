@@ -49,21 +49,25 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/:id/tasks", (req, res) => {
-  const task = req.body;
-  const { id } = req.params;
-  db.addTasks(id, task)
+  const taskData = req.body;
+  const id = req.params.id;
+  db.getProjectbyId(id)
     .then(task => {
-      console.log("Posting Task", response);
-      res.status(201).json(task);
+      if (task) {
+        Projects.addTask(taskData, id).then(newTask => {
+          res.status(201).json(newTask);
+        });
+      } else {
+        res.status(404).json({ error: "Unable to find task with given id" });
+      }
     })
     .catch(err => {
-      res.status(500).json({ message: "Server Error", error: err });
+      res.status(500).json({ error: "Failed to create new task" });
     });
 });
 
 router.get("/:id/tasks", (req, res) => {
-  const { id } = req.params;
-  db.getTasks(id)
+  db.getTasks(req.params.id)
     .then(tasks => {
       console.log("Getting Task", tasks);
 
@@ -82,19 +86,19 @@ router.get("/:id/tasks", (req, res) => {
     });
 });
 
-router.post("/resources", (req, res) => {
-  db.addResources(req.body)
-    .then(result => {
+router.post("/:id/resources", (req, res) => {
+  db.addResources(req.params.id, req.body)
+    .then(resource => {
       console.log("Posting Resource", response);
-      res.status(201).json(result);
+      res.status(201).json(resource);
     })
     .catch(err => {
       res.status(500).json({ message: "Server Error", error: err });
     });
 });
 
-router.get("/resources", (req, res) => {
-  db.getResources()
+router.get("/:id/resources", (req, res) => {
+  db.getResources(req.params.id)
     .then(resources => {
       console.log("Getting Resource", resources);
 
